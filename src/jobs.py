@@ -25,21 +25,24 @@ def _queue_job(jid):
     """Add a job to the redis queue."""
     q.put(jid)
 
-def _instantiate_job(jid, status, ticker):
+def _instantiate_job(jid, status, job_type, input_values):
     if type(jid) == str:
         return {'id': jid,
                 'status': status,
-                'ticker': ticker 
+                'job_type': job_type,
+                'input_values': input_values
         }
+    
     return {'id': jid.decode('utf-8'),
             'status': status.decode('utf-8'),
-            'ticker': ticker.decode('utf-8'),
+            'job_type': job_type.decode('utf-8'),
+            'input_values': input_values.decode('utf-8')
             }
 
-def add_job(ticker, status="submitted"):
+def add_job(job_type, input_values, status="submitted"):
     """Add a job to the redis queue."""
     jid = _generate_jid()
-    job_dict = _instantiate_job(jid, status, ticker)
+    job_dict = _instantiate_job(jid, status, job_type, input_values)
     _save_job(_generate_job_key(jid), job_dict)
     _queue_job(jid)
     return job_dict
@@ -54,8 +57,8 @@ def return_image(jid):
 
 def update_job_status(jid, new_status):
     """Update the status of job with job id `jid` to status `status`."""
-    jid, status, ticker= rd.hmget(_generate_job_key(jid), 'id', 'status', 'ticker')
-    job = _instantiate_job(jid, status, ticker)
+    jid, status, job_type, input_values = rd.hmget(_generate_job_key(jid), 'id', 'status', 'job_type', 'input_values')
+    job = _instantiate_job(jid, status, job_type, input_values)
     if job:
         job['status'] = new_status
         _save_job(_generate_job_key(jid), job)
