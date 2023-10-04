@@ -6,6 +6,7 @@ import os
 
 q = HotQueue("queue", host='127.0.0.1', port=6379, db=1)
 rd = redis.StrictRedis(host='127.0.0.1',  port=6379, db=0, decode_responses=True)
+rdi = redis.StrictRedis(host='127.0.0.1', port=6379, db=2)
 
 def test():
     return rd.get(3)
@@ -46,6 +47,10 @@ def add_job(ticker, status="submitted"):
 def return_job(jid):
     jid = _generate_job_key(jid)
     return(rd.hgetall(jid))
+
+def return_image(jid):
+    jid = _generate_job_key(jid)
+    return(rdi.get(jid))
 
 def update_job_status(jid, new_status):
     """Update the status of job with job id `jid` to status `status`."""
