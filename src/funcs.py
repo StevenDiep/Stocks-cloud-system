@@ -1,7 +1,8 @@
-from datetime import datetime
+import datetime
+from dateutil.relativedelta import relativedelta
 
 def string_to_date(string):
-    new_date = datetime.strptime(string, '%Y-%m-%d')
+    new_date = datetime.datetime.strptime(string, '%Y-%m-%d')
     
     return new_date
 
@@ -19,3 +20,43 @@ def dict_convert(old_d):
     new_d = {date_to_string(key): round(value, 2) for key,value in keys_values}
     
     return new_d
+
+#Given a date and a time period, returns a new date a period before the given date
+#Periods are in 1d, 7d, 1m, 3m, 6m, 1y, 5y
+#old_date is a datetime and period is a string
+def get_past_date(old_date, period):
+    accepted_periods = ['1d', '7d', '1m', '3m', '6m', '1y', '5y']
+    
+    if period not in accepted_periods:
+        raise Exception("period needs to be in accepted period list: ['1d', '7d', '1m', '3m', '6m', '1y', '5y']")
+        
+    period_num = int(period[0])
+    
+    if 'd' in period:
+        new_date = old_date - relativedelta(days=period_num)
+    elif 'm' in period:
+        new_date = old_date - relativedelta(months=period_num)
+    elif 'y' in period:
+        new_date = old_date - relativedelta(years=period_num) + \
+            relativedelta(days = 1)
+    
+    return new_date
+
+#Returns the percent difference of a stock given the ticker dict and period str
+def get_stock_diff(ticker, period):
+    dates = list(ticker.keys())
+    current_date = dates[-1]
+    current_value = ticker[current_date]
+    
+    current_date = datetime.datetime.strptime(current_date, "%Y-%m-%d")
+    past_date = date_to_string(get_past_date(current_date, period))
+    past_value = ticker[past_date]
+    
+    diff = current_value/past_value
+    
+    if diff > 1:
+        diff = diff - 1
+        return "The stock has increased by " + format(diff, ".2%")
+    else:
+        diff = (1 - diff)
+        return "The stock has decreased by " + format(diff, ".2%")
