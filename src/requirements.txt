@@ -1,0 +1,8 @@
+datetime
+flask
+matplotlib
+redis
+hotqueue
+requests
+yfinance
+bs4

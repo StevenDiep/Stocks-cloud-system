@@ -1,0 +1,42 @@
+---
+version: '3'
+services:
+    redis:
+        image: redis:5.0.0
+        container_name: stevendiep-stocks-test-redis
+        ports:
+            - 5050:6379
+        volumes:
+            - datasets:/data
+    retrieve:
+        build:
+            context: ../
+            dockerfile: ${PWD}/Dockerfile.retrieve
+        container_name: stevendiep-stocks-test-retrieve
+        environment:
+            - REDIS_IP=redis
+        depends_on:
+            - redis
+    web:
+        build:
+            context: ../
+            dockerfile: ${PWD}/Dockerfile.api
+        container_name: stevendiep-stocks-test-api
+        environment:
+            - REDIS_IP=redis
+        ports:
+            - 5000:5000
+        depends_on:
+            - redis
+    worker:
+        build:
+            context: ../
+            dockerfile: ${PWD}//Dockerfile.worker
+        container_name: stevendiep-stocks-test-worker
+        environment:
+            - REDIS_IP=redis
+        depends_on:
+            - redis
+
+volumes:
+    datasets:

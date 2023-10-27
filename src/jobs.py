@@ -3,11 +3,16 @@ from hotqueue import HotQueue
 import uuid
 import os
 
+import os
 
-q = HotQueue("queue", host='127.0.0.1', port=6379, db=1)
-rd = redis.StrictRedis(host='127.0.0.1',  port=6379, db=0, decode_responses=True)
-rdi = redis.StrictRedis(host='127.0.0.1', port=6379, db=2)
-rds = redis.StrictRedis(host='127.0.0.1', port=6379, db=3)
+redis_ip = os.environ.get('REDIS_IP')
+if not redis_ip:
+    raise Exception()
+
+q = HotQueue("queue", host=redis_ip, port=6379, db=1)
+rd = redis.StrictRedis(host=redis_ip,  port=6379, db=0, decode_responses=True)
+rdi = redis.StrictRedis(host=redis_ip, port=6379, db=2)
+rds = redis.StrictRedis(host=redis_ip, port=6379, db=3)
 
 def test():
     return rd.get(3)
