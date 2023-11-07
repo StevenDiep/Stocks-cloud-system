@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-test-db-deployment
+  labels:
+    app: stocks-test-db
+    env: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stocks-test-db
+  template:
+    metadata:
+      labels:
+        app: stocks-test-db
+        env: test
+    spec:
+      containers:
+        - name: stocks-test-db
+          image: redis:5.0.0
+          imagePullPolicy: Always
+          ports:
+              - name: database
+                containerPort: 6379
+          volumeMounts:
+          - name: stocks-test-db-pvc
+            mountPath: "/data"
+      volumes:
+      - name: stocks-test-db-pvc
+        persistentVolumeClaim:
+          claimName: stocks-test-db-pvc

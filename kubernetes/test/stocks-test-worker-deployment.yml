@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-test-wrk-deployment
+  labels:
+    app: stocks-test-wrk
+    env: test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stocks-test-wrk
+  template:
+    metadata:
+      labels:
+        app: stocks-test-wrk
+        env: test
+    spec:
+      containers:
+        - name: stocks-test-wrk
+          image: stevendiep/stocks-test-worker:1.0
+          imagePullPolicy: Always
+          env:
+          - name: REDIS_IP
+            value: ${RIP}

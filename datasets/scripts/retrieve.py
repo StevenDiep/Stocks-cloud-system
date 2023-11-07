@@ -7,7 +7,18 @@ import yfinance as yf
 import datetime
 import json
 from entry_functions import dict_convert
+from concurrent import futures
+import functools
+import redis
 
+def get_stock(stock_dict, ticker):
+    current_ticker = yf.Ticker(ticker)
+    hist = current_ticker.history(period="1y")["Close"]
+    current_stock_info = hist.to_dict()
+    current_stock_info = dict_convert(current_stock_info)
+    
+    stock_dict[ticker] = current_stock_info
+    
 #The following block of code retrieves the tickers of the S&P 500 companies
 resp = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
 soup = bs.BeautifulSoup(resp.text, 'lxml')
@@ -27,17 +38,19 @@ tickers.insert(0, "^GSPC")
 
 #The following block of code will create our json file that contains our dataset
 stocks = {};
-for ticker in tickers:
-    current_ticker = yf.Ticker(ticker)
-    hist = current_ticker.history(period="1mo")["Close"]
-    
-    current_stock_info = hist.to_dict()
-    current_stock_info = dict_convert(current_stock_info)
-    
-    stocks[ticker] = current_stock_info
+
+#set the maximum thread number
+max_workers = 50
+
+workers = min(max_workers, len(tickers)) #in case a smaller number of stocks than threads was passed in
+partial_get_stock = functools.partial(get_stock,stocks)
+with futures.ThreadPoolExecutor(workers) as executor:
+    res = executor.map(partial_get_stock, tickers)
 
 
-with open('stocks.json', 'w') as out:
-    json.dump(stocks, out, indent=2)
+
+rds = redis.StrictRedis(host='127.0.0.1', port = 6379, db = 3)
+for i in stocks:
+    rds.set(i, json.dumps(stocks[i]))
 
     

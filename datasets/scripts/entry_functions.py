@@ -5,6 +5,10 @@ def string_to_date(string):
     
     return new_date
 
+def string_to_date_arr(date_arr):
+    new_arr = [string_to_date(element) for element in date_arr]
+    return new_arr
+    
 def date_to_string(date):
     new_string = str(date)[:10]
     

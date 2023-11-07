@@ -9,7 +9,7 @@ class TestJsonEx(unittest.TestCase):
         
         self.assertEqual(len(stocks), 504)
         self.assertEqual("AAPL" in stocks, True)
-        self.assertEqual(stocks["AAPL"]["2023-09-19"], 179)
+        self.assertEqual(stocks["AAPL"]["2023-09-19"], 179.07)
         self.assertEqual("GOOGL" in stocks, True)
         
 

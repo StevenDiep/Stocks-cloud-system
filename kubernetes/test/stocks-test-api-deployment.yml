@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-test-api-deployment
+  labels:
+    app: stocks-test-api
+    env: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stocks-test-api
+  template:
+    metadata:
+      labels:
+        app: stocks-test-api
+        env: test
+    spec:
+      containers:
+        - name: stocks-test-api
+          image: stevendiep/stocks-test-flask:1.0
+          imagePullPolicy: Always
+          env:
+          - name: REDIS_IP
+            value: ${RIP}
+          ports:
+          - name: http
+            containerPort: 5000

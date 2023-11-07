@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stocks-test-api-service
+  labels:
+    env: test
+spec:
+  type: ClusterIP
+  selector:
+    app: stocks-test-api
+  ports:
+  - name: flask-port
+    port: 5000
+    targetPort: 5000

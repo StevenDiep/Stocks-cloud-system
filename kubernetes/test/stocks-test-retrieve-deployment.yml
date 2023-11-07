@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-test-retrieve-deployment
+  labels:
+    app: stocks-test-retrieve
+    env: test
+spec:
+  replicas: 
+  selector:
+    matchLabels:
+      app: stocks-test-retrieve
+  template:
+    metadata:
+      labels:
+        app: stocks-test-retrieve
+        env: test
+    spec:
+      containers:
+        - name: stocks-test-retrieve
+          image: stevendiep/stocks-test-retrieve:1.0
+          imagePullPolicy: Always
+          env:
+          - name: REDIS_IP
+            value: ${RIP}

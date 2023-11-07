@@ -7,7 +7,17 @@ import yfinance as yf
 import datetime
 import json
 from entry_functions import dict_convert
+from concurrent import futures
 
+
+def get_stock(stock_dict, ticker):
+    current_ticker = yf.Ticker(ticker)
+    hist = current_ticker.history(period="1mo")["Close"]
+    current_stock_info = hist.to_dict()
+    current_stock_info = dict_convert(current_stock_info)
+    
+    stock_dict[ticker] = current_stock_info
+    
 #The following block of code retrieves the tickers of the S&P 500 companies
 resp = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
 soup = bs.BeautifulSoup(resp.text, 'lxml')
@@ -25,11 +35,9 @@ tickers = [s.replace('\n', '') for s in tickers]
 
 tickers.insert(0, "^GSPC")
 
-start = datetime.datetime(2022, 1, 1)
-end = datetime.datetime(2022, 1, 5)
-data = yf.download(tickers, start=start, end=end)
+#The following block of code will create our json file that contains our dataset
+stocks = {};
 
-for entry in data:
-    print(entry)
-    
-data.to_csv("test.csv")
+results = [(stocks, ticker) for ticker in tickers]
+
+print(results)
