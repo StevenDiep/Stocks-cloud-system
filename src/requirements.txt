@@ -6,3 +6,4 @@ hotqueue
 requests
 yfinance
 bs4
+numpy

@@ -4,6 +4,8 @@ build-api:
 
 run-api:
 	docker run --name stevendiep-api \
+                   --network stevendiep-network-test \
+                   --env REDIS_IP=stevendiep-db \
                    -d \
                    -p 5000:5000 \
                    stevendiep/stocks-test-flask:1.0
@@ -13,6 +15,8 @@ build-worker:
 
 run-worker:
 	docker run --name stevendiep-worker \
+                   --network stevendiep-network-test \
+                   --env REDIS_IP=stevendiep-db \
                    -d \
                    stevendiep/stocks-test-worker:1.0
 build-retrieve:
@@ -20,17 +24,20 @@ build-retrieve:
 
 run-retrieve:
 	docker run --name stevendiep-retrieve \
+                   --network stevendiep-network-test \
+                   --env REDIS_IP=stevendiep-db \
                    -d \
                     stevendiep/stocks-test-retrieve:1.0
 run-redis:
 	docker run --name stevendiep-db \
+                   --network stevendiep-network-test \
                    -d \
                    -p 6379:6379 \
-                   -v datasets/:data \
+                   -v datasets:/data \
                    redis:5.0.0
 
 
-clean-db:
+clean-redis:
 	docker stop stevendiep-db && docker rm -f stevendiep-db
 
 clean-api:
@@ -39,12 +46,15 @@ clean-api:
 clean-worker:
 	docker stop stevendiep-worker && docker rm -f stevendiep-worker
 
+clean-retrieve:
+	docker stop stevendiep-retrieve && docker rm -f stevendiep-retrieve
 
-build-all: build-api build-worker
 
-run-all: run-api run-worker run-db
+build-all: build-api build-worker build-retrieve
 
-clean-all: clean-api clean-db clean-worker
+run-all: run-redis run-retrieve run-api run-worker 
+
+clean-all: clean-redis clean-retrieve clean-api clean-worker
 
 
 compose-up:

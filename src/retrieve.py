@@ -13,7 +13,7 @@ from jobs import rds
 
 def get_stock(stock_dict, ticker):
     current_ticker = yf.Ticker(ticker)
-    hist = current_ticker.history(period="1y")["Close"]
+    hist = current_ticker.history(period="5y")["Close"]
     current_stock_info = hist.to_dict()
     current_stock_info = dict_convert(current_stock_info)
     

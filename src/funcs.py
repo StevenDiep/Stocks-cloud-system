@@ -1,5 +1,6 @@
 import datetime
 from dateutil.relativedelta import relativedelta
+import numpy as np
 
 def string_to_date(string):
     new_date = datetime.datetime.strptime(string, '%Y-%m-%d')
@@ -60,3 +61,29 @@ def get_stock_diff(ticker, period):
     else:
         diff = (1 - diff)
         return "The stock has decreased by " + format(diff, ".2%")
+    
+def convert_values_to_diff(values):
+    first_value = list(values)[0]
+    new_values = ((np.array(list(values))-first_value)/first_value) * 100
+    return new_values
+    
+
+def validate(date_string):
+    try:
+        datetime.date.fromisoformat(date_string)
+    except ValueError:
+        raise ValueError("Incorrect data format, should be YYYY-MM-DD")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
