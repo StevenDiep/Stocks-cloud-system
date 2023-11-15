@@ -11,7 +11,7 @@ services:
     retrieve:
         build:
             context: ../
-            dockerfile: ${PWD}/Dockerfile.retrieve
+            dockerfile: ${PWD}/docker/Dockerfile.retrieve
         container_name: stevendiep-stocks-test-retrieve
         environment:
             - REDIS_IP=redis
@@ -20,7 +20,7 @@ services:
     web:
         build:
             context: ../
-            dockerfile: ${PWD}/Dockerfile.api
+            dockerfile: ${PWD}/docker/Dockerfile.api
         container_name: stevendiep-stocks-test-api
         environment:
             - REDIS_IP=redis
@@ -31,7 +31,7 @@ services:
     worker:
         build:
             context: ../
-            dockerfile: ${PWD}//Dockerfile.worker
+            dockerfile: ${PWD}/docker/Dockerfile.worker
         container_name: stevendiep-stocks-test-worker
         environment:
             - REDIS_IP=redis

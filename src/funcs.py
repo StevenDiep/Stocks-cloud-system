@@ -43,6 +43,22 @@ def get_past_date(old_date, period):
     
     return new_date
 
+def get_new_arrays(dates, values, period):
+    if period == '5y':
+        return dates,values
+    
+    min_date = get_past_date(dates[-1], period)
+    index = 0
+    for date in dates:
+        if date <= min_date:
+            index += 1;
+        else:
+            break
+    
+    
+    return list(dates)[index:], list(values)[index:]
+    
+    
 #Returns the percent difference of a stock given the ticker dict and period str
 def get_stock_diff(ticker, period):
     dates = list(ticker.keys())
@@ -71,6 +87,7 @@ def convert_values_to_diff(values):
 def validate(date_string):
     try:
         datetime.date.fromisoformat(date_string)
+        return date_string
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 

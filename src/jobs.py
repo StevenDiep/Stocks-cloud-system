@@ -3,8 +3,6 @@ from hotqueue import HotQueue
 import uuid
 import os
 
-import os
-
 redis_ip = os.environ.get('REDIS_IP')
 if not redis_ip:
     raise Exception()

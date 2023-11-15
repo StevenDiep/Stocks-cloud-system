@@ -58,25 +58,28 @@ clean-all: clean-redis clean-retrieve clean-api clean-worker
 
 
 compose-up:
-	docker-compose -f docker/docker-compose.yml -p stevendiep up -d 
+	docker-compose -f docker/docker-compose.yml -p stevendiep up -d --build
 
 compose-down:
 	docker-compose -f docker/docker-compose.yml -p stevendiep down
 
 test-api:
-	python3 test/api_test.py
+	python3 test/api_test.py localhost
 
 k-test:
 	kubectl apply -f kubernetes/test/stocks-test-db-service.yml
+	kubectl apply -f kubernetes/test/stocks-test-db-deployment.yml
 	DBIP=$$(kubectl describe service stocks-test-db-service | grep 'IP:' | awk '{print $$2}') && \
 	cat kubernetes/test/* | TAG="1.0" envsubst '$${TAG}' | RIP=$${DBIP} envsubst '$${RIP}' | kubectl apply -f -
-
 
 k-test-del:
 	cat kubernetes/test/*.yml | TAG="1.0" envsubst '$${TAG}' |  kubectl delete -f -	
 
-
-
-
+k-prod:
+	kubectl apply -f kubernetes/prod/stocks-prod-db-service.yml
+	DBIP=$$(kubectl describe service stocks-prod-db-service | grep 'IP:' | awk '{print $$2}') && \
+	cat kubernetes/prod/* | TAG="1.0" envsubst '$${TAG}' | RIP=$${DBIP} envsubst '$${RIP}' | kubectl apply -f -
+k-prod-del:
+	cat kubernetes/prod/*.yml | TAG="1.0" envsubst '$${TAG}' |  kubectl delete -f -
 
 

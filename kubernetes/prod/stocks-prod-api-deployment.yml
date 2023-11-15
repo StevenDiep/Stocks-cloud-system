@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-prod-api-deployment
+  labels:
+    app: stocks-prod-api
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stocks-prod-api
+  template:
+    metadata:
+      labels:
+        app: stocks-prod-api
+        env: prod
+    spec:
+      containers:
+        - name: stocks-prod-api
+          image: stevendiep/stocks-test-flask:1.0
+          imagePullPolicy: Always
+          env:
+          - name: REDIS_IP
+            value: ${RIP}
+          ports:
+          - name: http
+            containerPort: 5000
