@@ -82,4 +82,7 @@ k-prod:
 k-prod-del:
 	cat kubernetes/prod/*.yml | TAG="1.0" envsubst '$${TAG}' |  kubectl delete -f -
 
-
+k-debug-pod:
+	kubectl apply -f kubernetes/deployment-python-debug.yml
+k-debug-pod-del:
+	kubectl delete -f kubernetes/deployment-python-debug.yml

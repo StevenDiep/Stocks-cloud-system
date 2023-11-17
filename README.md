@@ -52,3 +52,38 @@ The following array represents the accepted periods for the end points: ['1d', '
 
 2. The following picture shows example curls for the next 5 routes:
 ![alt text](https://github.com/StevenDiep/Stocks-cloud-system/blob/main/readme/example_curl_2.png?raw=true)
+
+The results from all of these curls will be in the examples folder
+## Kubernetes example curls
+The process to get the same results on kubernetes is a bit more involved.
+1) First you need to start up a python debug deployment if you haven't already using:
+```bash
+make k-debug-pod
+```
+2) Find the IP address of the API service you'll be pinging requests to using as well as the name of your debug pod:
+```bash
+kubectl get services
+```
+
+```bash
+kubect get pods
+```
+
+3) Once you have the IP address, exec into the debug pod using:
+```bash
+kubectl exec -it <your pod> -- /bin/bash
+4) Once inside, you can use curl requests as normal just replace 'localhost' with the IP address you got before
+5) Last, once you download the images using download, we have to use kubectl cp to transfer the image from the pod to our local computer
+
+## Kubernetes Example
+The following picture shows how to start up the k8s pods and the python debug pod. Also shows how you need to copy the IP address of the API service for the curls and then shows an example of curling a route:
+![alt text](https://github.com/StevenDiep/Stocks-cloud-system/blob/main/readme/example_k8s_1.png?raw=true)
+
+This next picture shows how to use commands to request a graphing job and then takes that output graph from your pod to your local machine:
+![alt text](https://github.com/StevenDiep/Stocks-cloud-system/blob/main/readme/example_k8s_2.png?raw=true)
+
+## Future work
+
+1) I would love to add some HTML and CSS to the project in the future to have some actual front-end
+2) Some of the steps to grab a graph seemed involved, especially with kubernetes. Hopefully I can find a way in the future to make this process more smooth and fluent for users to obtain a graph.
+3) Add more analysis jobs other than just graphing. Maybe use some machine learning algorithms or basic stock graph analysis to the project as well. 
