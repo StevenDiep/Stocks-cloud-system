@@ -9,6 +9,7 @@ The dataset used for the project will be stock data from the fortune 500 compani
 
 ## More information about system components
 API: The API used for this project will be flask and it will take in requests from users and give updates on jobs.
+
 Database: The database used for this project will be redis. Our data is large and doesn't have to be connected, which makes a noSQL database like redis perfect for the project. There are three main sections of the database. 
 1. Jobs, this section of the database will contain all past jobs where users can look at with a UUID
 2. Images, given that the user's request returns a graph, this section of the database will contain the graphs that are returned from the job.
@@ -16,4 +17,38 @@ Database: The database used for this project will be redis. Our data is large an
 
 Workers: The workers main job will be taking on graphing tasks. This involves taking jobs from the queue, identifying what kind of graphing job it is, executing it, and then saving the image to the database.
 
+## Deployment
+The project in this repo can be deployed on docker or, more preferably, on kubernetes cluster. 
 
+0) Before you can deploy the project, make sure you have dockerhub installed and running on your computer. Also make sure that the k8s cluster is installed and working properly in settings of docker hub.
+1) On your terminal, cd to the path you would like this repo to be under and use
+```bash
+git clone https://github.com/StevenDiep/Stocks-cloud-system
+```
+2a) To run on docker hub, run the command:
+```bash
+make build-all
+make run-all
+```
+2b) To run on kubernetes, run the command:
+```bash
+make k-prod
+```
+## List of endpoints and expected responses
+
+The following array represents the accepted periods for the end points: ['1d', '7d', '1m', '3m', '6m', '1y', '5y']
+1. (/stock/<string:ticker>), e.x. (/stock/AAPL) should return all dates/values from the AAPL stock.
+2. (/stock/diff/<string:ticker>/<string:period>), e.x. (/stock/diff/AAPL/1y) will return the percent difference of the stock's closing price between today and one year ago.
+3. (/stock/add) will allow you to add datapoints into your stock data, thought not really recommended
+4. (/stock/graph) will return a graph of your desired ticker
+5. (/stock/compare) will return a graph comparing two tickers of your choice
+6. (/stock/compare_sp500) will return a graph comparing the % difference between your stock of choice and the sp500
+7. (/jobs/<uuid>) will return the status and information about your job
+8. (/download/<uuid>) will allow you to download a picture of the graph you requested through the API
+
+## Example curls
+1. The following picture shows example curls for the first 3 routes:
+![alt text](https://github.com/StevenDiep/Stocks-cloud-system/blob/main/readme/example_curl_1.png?raw=true)
+
+2. The following picture shows example curls for the next 5 routes:
+![alt text](https://github.com/StevenDiep/Stocks-cloud-system/blob/main/readme/example_curl_2.png?raw=true)
