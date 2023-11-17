@@ -72,6 +72,8 @@ kubect get pods
 3) Once you have the IP address, exec into the debug pod using:
 ```bash
 kubectl exec -it <your pod> -- /bin/bash
+```
+
 4) Once inside, you can use curl requests as normal just replace 'localhost' with the IP address you got before
 5) Last, once you download the images using download, we have to use kubectl cp to transfer the image from the pod to our local computer
 
